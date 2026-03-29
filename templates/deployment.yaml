@@ -93,7 +93,7 @@ spec:
                 - /bin/sh
                 - -c
                 - >-
-                  curl -sf -u "$(APP_USERNAME):$(APP_PASSWORD)"
+                  curl -sf -u "$APP_USERNAME:$APP_PASSWORD"
                   http://localhost:{{ .Values.config.port }}/status
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -103,7 +103,7 @@ spec:
                 - /bin/sh
                 - -c
                 - >-
-                  curl -sf -u "$(APP_USERNAME):$(APP_PASSWORD)"
+                  curl -sf -u "$APP_USERNAME:$APP_PASSWORD"
                   http://localhost:{{ .Values.config.port }}/status
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
