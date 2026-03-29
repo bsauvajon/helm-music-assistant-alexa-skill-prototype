@@ -1,0 +1,17 @@
+apiVersion: v2
+name: music-assistant-alexa-skill
+description: Helm chart for deploying the Music Assistant Alexa Skill prototype
+type: application
+version: 0.1.0
+appVersion: "latest"
+keywords:
+  - music-assistant
+  - alexa
+  - skill
+  - flask
+home: https://github.com/alams154/music-assistant-alexa-skill-prototype
+sources:
+  - https://github.com/alams154/music-assistant-alexa-skill-prototype
+maintainers:
+  - name: alams154
+    url: https://github.com/alams154

@@ -1,0 +1,139 @@
+# -- Number of replicas
+replicaCount: 1
+
+image:
+  # -- Image repository
+  repository: ghcr.io/alams154/music-assistant-alexa-skill-prototype
+  # -- Image pull policy
+  pullPolicy: IfNotPresent
+  # -- Image tag (defaults to chart appVersion)
+  tag: ""
+
+# -- Image pull secrets
+imagePullSecrets: []
+
+# -- Override the chart name
+nameOverride: ""
+# -- Override the full release name
+fullnameOverride: ""
+
+serviceAccount:
+  # -- Whether to create a ServiceAccount
+  create: true
+  # -- Annotations for the ServiceAccount
+  annotations: {}
+  # -- Name of the ServiceAccount (defaults to the release fullname)
+  name: ""
+
+# -- Annotations for the Pod
+podAnnotations: {}
+
+# -- Labels for the Pod
+podLabels: {}
+
+# -- Pod security context
+podSecurityContext: {}
+
+# -- Container security context
+securityContext: {}
+
+service:
+  # -- Service type
+  type: ClusterIP
+  # -- Application port (must match config.port)
+  port: 5000
+
+# -- Ingress configuration
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: alexa-skill.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# -- Resource requests and limits
+resources: {}
+
+# -- Liveness probe configuration
+livenessProbe:
+  httpGet:
+    path: /status
+    port: http
+  initialDelaySeconds: 15
+  periodSeconds: 30
+
+# -- Readiness probe configuration
+readinessProbe:
+  httpGet:
+    path: /status
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+
+# -- Persistence for ASK CLI credentials (/root/.ask)
+persistence:
+  enabled: false
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 100Mi
+  # -- Existing PVC name (if set, no PVC will be created)
+  existingClaim: ""
+
+# -- Autoscaling configuration
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+
+# -- Node selector
+nodeSelector: {}
+
+# -- Tolerations
+tolerations: []
+
+# -- Affinity
+affinity: {}
+
+# -----------------------------------------------------------------------------
+# ConfigMap — non-sensitive configuration
+# If 'existingConfigMap' is set, the chart will use that ConfigMap instead of
+# creating one from 'config' values.
+# -----------------------------------------------------------------------------
+existingConfigMap: ""
+
+config:
+  # -- Public HTTPS hostname for the Alexa skill endpoint (REQUIRED)
+  skillHostname: ""
+  # -- Music Assistant server hostname (required for non-APL devices)
+  maHostname: ""
+  # -- Port the application listens on
+  port: "5000"
+  # -- Debug port (set to "0" to disable)
+  debugPort: "0"
+  # -- Skill locale (e.g. en-US, en-GB, de-DE)
+  locale: "en-US"
+  # -- AWS default region for ASK CLI
+  awsDefaultRegion: "us-east-1"
+  # -- Container timezone
+  tz: "UTC"
+  # -- Reduce HTTP request log noise
+  quietHttp: "1"
+
+# -----------------------------------------------------------------------------
+# Secret — sensitive credentials
+# If 'existingSecret' is set, the chart will use that Secret instead of
+# creating one from 'credentials' values.
+# The Secret must contain the keys: APP_USERNAME, APP_PASSWORD
+# -----------------------------------------------------------------------------
+existingSecret: ""
+
+credentials:
+  # -- Username for the web UI / API basic authentication
+  appUsername: ""
+  # -- Password for the web UI / API basic authentication
+  appPassword: ""

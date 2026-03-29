@@ -1,0 +1,18 @@
+{{- if not .Values.existingConfigMap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "music-assistant-alexa-skill.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "music-assistant-alexa-skill.labels" . | nindent 4 }}
+data:
+  SKILL_HOSTNAME: {{ .Values.config.skillHostname | quote }}
+  MA_HOSTNAME: {{ .Values.config.maHostname | quote }}
+  PORT: {{ .Values.config.port | quote }}
+  DEBUG_PORT: {{ .Values.config.debugPort | quote }}
+  LOCALE: {{ .Values.config.locale | quote }}
+  AWS_DEFAULT_REGION: {{ .Values.config.awsDefaultRegion | quote }}
+  TZ: {{ .Values.config.tz | quote }}
+  QUIET_HTTP: {{ .Values.config.quietHttp | quote }}
+{{- end }}

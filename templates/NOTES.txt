@@ -1,0 +1,29 @@
+1. Music Assistant Alexa Skill has been deployed.
+
+   Application URL:
+   {{- if .Values.ingress.enabled }}
+   {{- range $host := .Values.ingress.hosts }}
+   https://{{ $host.host }}/
+   {{- end }}
+   {{- else if contains "NodePort" .Values.service.type }}
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "music-assistant-alexa-skill.fullname" . }})
+   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+   echo http://$NODE_IP:$NODE_PORT
+   {{- else if contains "LoadBalancer" .Values.service.type }}
+   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "music-assistant-alexa-skill.fullname" . }} --template "{{ "{{" }} range (index .status.loadBalancer.ingress 0) {{ "}}" }}{{ "{{" }} . {{ "}}" }}{{ "{{" }} end {{ "}}" }}")
+   echo http://$SERVICE_IP:{{ .Values.service.port }}
+   {{- else }}
+   kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "music-assistant-alexa-skill.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+   # Then open: http://127.0.0.1:{{ .Values.service.port }}
+   {{- end }}
+
+2. Open the setup UI at <app-url>/setup to configure the Alexa skill via ASK CLI.
+
+3. Check application health at <app-url>/status.
+
+{{- if not .Values.config.skillHostname }}
+WARNING: config.skillHostname is not set. The application requires a public HTTPS hostname
+         to register the Alexa skill endpoint. Set it via --set config.skillHostname=<your-host>
+         or in your values file.
+{{- end }}
