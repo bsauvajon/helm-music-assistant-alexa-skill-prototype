@@ -3,7 +3,7 @@ replicaCount: 1
 
 image:
   # -- Image repository
-  repository: ghcr.io/alams154/music-assistant-alexa-skill-prototype
+  repository: ghcr.io/alams154/music-assistant-skill
   # -- Image pull policy
   pullPolicy: IfNotPresent
   # -- Image tag (defaults to chart appVersion)

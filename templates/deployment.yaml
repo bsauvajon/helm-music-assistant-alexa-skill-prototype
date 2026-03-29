@@ -85,6 +85,29 @@ spec:
                   name: {{ include "music-assistant-alexa-skill.secretName" . }}
                   key: APP_PASSWORD
                   optional: true
+          {{- $hasCredentials := or .Values.credentials.appUsername .Values.credentials.appPassword .Values.existingSecret }}
+          {{- if $hasCredentials }}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - >-
+                  curl -sf -u "$(APP_USERNAME):$(APP_PASSWORD)"
+                  http://localhost:{{ .Values.config.port }}/status
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - >-
+                  curl -sf -u "$(APP_USERNAME):$(APP_PASSWORD)"
+                  http://localhost:{{ .Values.config.port }}/status
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          {{- else }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
@@ -92,6 +115,7 @@ spec:
           {{- with .Values.readinessProbe }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- end }}
           {{- with .Values.resources }}
           resources:
